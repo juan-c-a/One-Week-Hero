@@ -24,13 +24,18 @@ public class WeaponSelectorUI : MonoBehaviour
         foreach (WeaponData weapon in availableWeapons)
         {
             GameObject buttonGO = Instantiate(weaponButtonPrefab, buttonContainer);
-            buttonGO.GetComponentInChildren<Text>().text = weapon.weaponName;
+            Text nameText = buttonGO.transform.Find("WeaponName")?.GetComponent<Text>();
+            Image icon = buttonGO.transform.Find("Icon")?.GetComponent<Image>();
 
-            Image icon = buttonGO.GetComponentInChildren<Image>();
-            if (icon != null && weapon.weaponIcon != null)
+            if (nameText != null)
+                nameText.text = weapon.weaponName;
+
+            if (icon == null || weapon.weaponIcon == null)
             {
-                icon.sprite = weapon.weaponIcon;
             }
+            else
+                icon.sprite = weapon.weaponIcon;
+
 
             Button button = buttonGO.GetComponent<Button>();
             button.onClick.AddListener(() => ToggleWeaponSelection(weapon, buttonGO));

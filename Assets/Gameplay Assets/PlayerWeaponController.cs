@@ -1,42 +1,77 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerWeaponController : MonoBehaviour
 {
-    [SerializeField] public List<WeaponData> equippedWeapons = new List<WeaponData>();
-    private IWeaponBehavior currentWeaponBehavior;
-    public WeaponData currentWeaponData { get; private set; }
+    [SerializeField] private List<WeaponData> allWeapons = new List<WeaponData>();
+
+    private List<WeaponData> activeWeapons = new List<WeaponData>();
     private int currentWeaponIndex = 0;
-    private void Start()
+    private IWeaponBehavior currentWeaponBehavior;
+
+    [Header("Input Actions")]
+    [SerializeField] private InputActionReference attackAction;
+    [SerializeField] private InputActionReference nextWeaponAction;
+    [SerializeField] private InputActionReference previousWeaponAction;
+
+    private void Awake()
     {
-        var loadout = LoadoutManager.Instance.GetSelectedWeapons();
-        if (loadout != null && loadout.Count > 0)
-        {
-            equippedWeapons = new List<WeaponData>(loadout);
-            EquipWeapon(0);
-        }
+        RefreshActiveWeapons();
     }
 
-    public void EquipWeapon(int index)
+    private void OnEnable()
     {
-        if (index < 0 || index >= equippedWeapons.Count)
-        {
-            Debug.LogWarning("Index out of range.");
-            return;
-        }
-
-        currentWeaponIndex = index;
-        EquipWeapon(equippedWeapons[index]);
+        attackAction.action.performed += OnAttack;
+        nextWeaponAction.action.performed += OnNextWeapon;
+        previousWeaponAction.action.performed += OnPreviousWeapon;
     }
 
-    public void EquipWeapon(WeaponData weaponData)
+    private void OnDisable()
     {
-        currentWeaponData = weaponData;
+        attackAction.action.performed -= OnAttack;
+        nextWeaponAction.action.performed -= OnNextWeapon;
+        previousWeaponAction.action.performed -= OnPreviousWeapon;
+    }
+
+    private void RefreshActiveWeapons()
+    {
+        activeWeapons = allWeapons.FindAll(w => w.isEnabled);
+        EquipWeapon(currentWeaponIndex);
+    }
+
+    private void OnAttack(InputAction.CallbackContext ctx)
+    {
+        Vector2 direction = Vector2.right; // Puedes usar el input real si lo tienes
+        currentWeaponBehavior?.Attack(direction);
+    }
+
+    private void OnNextWeapon(InputAction.CallbackContext ctx)
+    {
+        if (activeWeapons.Count == 0) return;
+
+        currentWeaponIndex = (currentWeaponIndex + 1) % activeWeapons.Count;
+        EquipWeapon(currentWeaponIndex);
+    }
+
+    private void OnPreviousWeapon(InputAction.CallbackContext ctx)
+    {
+        if (activeWeapons.Count == 0) return;
+
+        currentWeaponIndex = (currentWeaponIndex - 1 + activeWeapons.Count) % activeWeapons.Count;
+        EquipWeapon(currentWeaponIndex);
+    }
+
+    private void EquipWeapon(int index)
+    {
+        if (activeWeapons.Count == 0 || index >= activeWeapons.Count) return;
 
         if (currentWeaponBehavior != null)
             Destroy((MonoBehaviour)currentWeaponBehavior);
 
-        switch (weaponData.weaponType)
+        var data = activeWeapons[index];
+
+        switch (data.weaponType)
         {
             case WeaponType.Melee:
                 currentWeaponBehavior = gameObject.AddComponent<MeleeWeaponBehavior>();
@@ -46,12 +81,23 @@ public class PlayerWeaponController : MonoBehaviour
                 break;
         }
 
-        currentWeaponBehavior.Initialize(this, weaponData);
-        Debug.Log($"Equipped weapon: {weaponData.weaponName}");
+        currentWeaponBehavior?.Initialize(transform, data);
+        Debug.Log($"Equipped: {data.weaponName}");
     }
 
-    public void Attack(Vector2 direction)
+    //  API pública
+    public void DisableWeapon(WeaponData weapon)
     {
-        currentWeaponBehavior?.Attack(transform, direction);
+        weapon.isEnabled = false;
+        RefreshActiveWeapons();
+    }
+
+    public void EnableWeapon(WeaponData weapon)
+    {
+        if (!allWeapons.Contains(weapon))
+            allWeapons.Add(weapon);
+
+        weapon.isEnabled = true;
+        RefreshActiveWeapons();
     }
 }

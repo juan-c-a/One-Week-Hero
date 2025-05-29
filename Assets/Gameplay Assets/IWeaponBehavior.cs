@@ -2,7 +2,6 @@ using UnityEngine;
 
 public interface IWeaponBehavior
 {
-    void Initialize(PlayerWeaponController controller, WeaponData weaponData);
-    void Attack(Transform origin, Vector2 direction);
-    void Use();
+    void Initialize(Transform owner, WeaponData data);
+    void Attack(Vector2 direction);
 }

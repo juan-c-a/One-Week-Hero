@@ -26,15 +26,5 @@ public class EnemySpawner : MonoBehaviour
         );
 
         GameObject enemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
-
-        BasicEnemyAI enemyAI = enemy.GetComponent<BasicEnemyAI>();
-        if (enemyAI != null)
-        {
-            enemyAI.SetTarget(playerTransform);
-        }
-        else
-        {
-            Debug.LogWarning("Spawned enemy does not have a BasicEnemyAI component.");
-        }
     }
 }

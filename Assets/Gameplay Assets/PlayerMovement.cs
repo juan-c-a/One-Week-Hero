@@ -6,10 +6,16 @@ public class PlayerControllerPro : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private InputActionReference move;
+    [SerializeField] private Animator animator;
 
     private Rigidbody2D playerRigidbody;
     private Vector2 movementInput;
 
+    private void Update()
+    {
+        animator.SetFloat("XSpeed", movementInput.x);
+        animator.SetFloat("YSpeed", movementInput.y);
+    }
     private void Awake()
     {
         playerRigidbody = GetComponent<Rigidbody2D>();

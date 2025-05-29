@@ -3,28 +3,40 @@ using UnityEngine;
 public class RangedWeaponBehavior : MonoBehaviour, IWeaponBehavior
 {
     private WeaponData weaponData;
-    private PlayerWeaponController controller;
+    private Transform owner;
 
-    public void Initialize(PlayerWeaponController controller, WeaponData weaponData)
+    public void Initialize(Transform owner, WeaponData data)
     {
-        this.controller = controller;
-        this.weaponData = weaponData;
-    }
+        this.owner = owner;
+        this.weaponData = data;
 
-    public void Attack(Transform origin, Vector2 direction)
-    {
-        Debug.Log($"Ranged attack with {weaponData.weaponName}");
-        if (weaponData.projectilePrefab != null)
+        // Optional: Instantiate visual representation
+        if (weaponData.weaponPrefab != null)
         {
-            GameObject proj = Instantiate(weaponData.projectilePrefab, origin.position, Quaternion.identity);
-            Rigidbody2D rb = proj.GetComponent<Rigidbody2D>();
-            if(rb != null)
-                rb.linearVelocity = direction.normalized * 10f;
+            Instantiate(weaponData.weaponPrefab, owner.position, owner.rotation, owner);
         }
     }
 
-    public void Use()
+    public void Attack(Vector2 direction)
     {
-        // Otra acción
+        if (weaponData.projectilePrefab == null)
+        {
+            Debug.LogWarning("No projectile prefab assigned to weapon: " + weaponData.weaponName);
+            return;
+        }
+
+        GameObject projectile = Instantiate(
+            weaponData.projectilePrefab,
+            owner.position,
+            Quaternion.identity
+        );
+
+        Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            rb.linearVelocity = direction.normalized * weaponData.projectileSpeed;
+        }
+
+        Debug.Log($"[Ranged] {weaponData.weaponName} fired a projectile.");
     }
 }

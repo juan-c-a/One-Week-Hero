@@ -3,49 +3,31 @@ using UnityEngine;
 public class MeleeWeaponBehavior : MonoBehaviour, IWeaponBehavior
 {
     private WeaponData weaponData;
-    private PlayerWeaponController controller;
+    private Transform owner;
 
-    [SerializeField] private float attackRange = 1.5f;
-    [SerializeField] private LayerMask hitMask; // Define qué capas pueden recibir daño (por ejemplo: "Enemies")
-
-    public void Initialize(PlayerWeaponController controller, WeaponData weaponData)
+    public void Initialize(Transform owner, WeaponData data)
     {
-        this.controller = controller;
-        this.weaponData = weaponData;
-    }
+        this.owner = owner;
+        this.weaponData = data;
 
-    public void Attack(Transform origin, Vector2 direction)
-    {
-        Debug.Log($"Melee attack with {weaponData.weaponName}");
-
-        // Realiza una detección de colisión tipo círculo para encontrar objetivos cercanos
-        RaycastHit2D[] hits = Physics2D.CircleCastAll(origin.position, attackRange, direction, 0f, hitMask);
-
-        foreach (var hit in hits)
+        // Optional: Instantiate visual representation
+        if (weaponData.weaponPrefab != null)
         {
-            var damageable = hit.collider.GetComponent<DamageableBehavior>();
-            if (damageable != null)
-            {
-                damageable.TakeDamage(weaponData.baseDamage);
-                Debug.Log($"Hit {hit.collider.name} for {weaponData.baseDamage} damage");
-            }
+            Instantiate(weaponData.weaponPrefab, owner.position, owner.rotation, owner);
         }
     }
 
-    public void Use()
+    public void Attack(Vector2 direction)
     {
-        // Aquí podrías implementar una acción secundaria si es necesario
-    }
+        // Implement melee attack logic, e.g., raycast or animation trigger
+        Debug.Log($"[Melee] {weaponData.weaponName} attacks in direction {direction}");
 
-#if UNITY_EDITOR
-    // Dibuja el área de ataque en modo editor para visual debugging
-    private void OnDrawGizmosSelected()
-    {
-        if (controller != null)
+        // Example: detect hit in front of player
+        RaycastHit2D hit = Physics2D.Raycast(owner.position, direction, 1.5f);
+        if (hit.collider != null)
         {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(controller.transform.position, attackRange);
+            Debug.Log("Hit: " + hit.collider.name);
+            // Apply damage or effects here
         }
     }
-#endif
 }

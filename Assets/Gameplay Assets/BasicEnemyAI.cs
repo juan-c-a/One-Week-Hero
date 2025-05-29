@@ -1,25 +1,27 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D))]
 public class BasicEnemyAI : MonoBehaviour
 {
-    [Header("Movement")]
     [SerializeField] private float moveSpeed = 2f;
-    [SerializeField] private float attackRange = 1f;
+    [SerializeField] private float detectionRange = 10f;
+    [SerializeField] private float stoppingDistance = 1.5f;
+    [SerializeField] private float attackCooldown = 1f;
+    [SerializeField] private Animator animator;
 
-    [Header("Attack")]
-    [SerializeField] private float attackCooldown = 1.5f;
-    [SerializeField] private int attackDamage = 1;
-
-    [Header("Target")]
-    [SerializeField] private Transform target;
-
-    private Rigidbody2D rb;
+    private Transform target;
     private float lastAttackTime;
 
-    private void Awake()
+    private void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            target = player.transform;
+        }
+        else
+        {
+            Debug.LogError("Player not found! Please tag the player object with 'Player'.");
+        }
     }
 
     private void Update()
@@ -28,36 +30,29 @@ public class BasicEnemyAI : MonoBehaviour
 
         float distance = Vector2.Distance(transform.position, target.position);
 
-        if (distance > attackRange)
+        if (distance <= detectionRange)
         {
-            // Movimiento hacia el jugador
-            Vector2 direction = (target.position - transform.position).normalized;
-            rb.linearVelocity = direction * moveSpeed;
-        }
-        else
-        {
-            rb.linearVelocity = Vector2.zero;
-
-            // Intentar atacar si ha pasado el tiempo de cooldown
-            if (Time.time >= lastAttackTime + attackCooldown)
+            // Mover hacia el jugador si está fuera del rango de parada
+            if (distance > stoppingDistance)
             {
-                Attack();
-                lastAttackTime = Time.time;
+                Vector2 direction = (target.position - transform.position).normalized;
+                transform.position += (Vector3)(direction * moveSpeed * Time.deltaTime);
+            }
+            else
+            {
+                TryAttack();
             }
         }
+        animator.SetFloat("Speed", transform.position.x);
     }
 
-    private void Attack()
+    private void TryAttack()
     {
-        if (target.TryGetComponent(out DamageableBehavior damageable))
+        if (Time.time >= lastAttackTime + attackCooldown)
         {
-            damageable.TakeDamage(attackDamage);
-            Debug.Log($"{gameObject.name} attacked {target.name} for {attackDamage} damage");
+            lastAttackTime = Time.time;
+            Debug.Log($"{gameObject.name} attacks the player!");
+            // Aquí podrías aplicar daño al jugador o llamar a otro método.
         }
-    }
-
-    public void SetTarget(Transform newTarget)
-    {
-        target = newTarget;
     }
 }

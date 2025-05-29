@@ -1,15 +1,24 @@
 using UnityEngine;
 
-public enum WeaponType { Melee, Ranged }
+public enum WeaponType
+{
+    Melee,
+    Ranged
+}
 
 [CreateAssetMenu(fileName = "NewWeapon", menuName = "Weapons/WeaponData")]
 public class WeaponData : ScriptableObject
 {
+    public bool isEnabled;
     public string weaponName;
-    public WeaponType weaponType;
     public Sprite weaponIcon;
     public GameObject weaponPrefab;
-    public GameObject projectilePrefab;  // Solo para armas a distancia
-    public int baseDamage;
-    public float attackSpeed;
+    public WeaponType weaponType;
+    public int damage;
+    public float cooldown;
+
+    [Header("Ranged Only")]
+    public GameObject projectilePrefab; // Usado solo si weaponType == Ranged
+    public float projectileSpeed = 10f;
+    public float projectileLifetime = 3f;
 }
