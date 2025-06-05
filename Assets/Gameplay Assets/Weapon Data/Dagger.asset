@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: Dagger
   m_EditorClassIdentifier: 
   isEnabled: 0
-  weaponName: 
-  weaponIcon: {fileID: 0}
-  weaponPrefab: {fileID: 0}
+  weaponName: Dagger
+  weaponIcon: {fileID: -2486521743634864436, guid: 6fdad4d27eeb2d34e9fdfa09cd6c77c1, type: 3}
+  weaponPrefab: {fileID: 5513239651274866370, guid: 03695d23bf6a69749bfc4238705c0cb7, type: 3}
   weaponType: 0
-  damage: 0
-  cooldown: 0
+  damage: 2
+  cooldown: 0.2
   projectilePrefab: {fileID: 0}
-  projectileSpeed: 10
-  projectileLifetime: 5
+  projectileSpeed: 0
+  projectileLifetime: 0

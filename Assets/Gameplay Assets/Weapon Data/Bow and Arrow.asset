@@ -12,10 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55442cab490871f48944beb90693c8f1, type: 3}
   m_Name: Bow and Arrow
   m_EditorClassIdentifier: 
+  isEnabled: 0
   weaponName: Bow and Arrow
-  weaponType: 1
   weaponIcon: {fileID: 7432904977221116701, guid: cbe254baa23d0a94fb9379ea111d195a, type: 3}
   weaponPrefab: {fileID: 3451010469648269545, guid: 2b34cc7012137cc40813c25834884d41, type: 3}
+  weaponType: 1
+  damage: 5
+  cooldown: 0.5
   projectilePrefab: {fileID: 6601905369489748755, guid: 82d3e606a0eea8349a3ad215b9323928, type: 3}
-  baseDamage: 5
-  attackSpeed: 3
+  projectileSpeed: 10
+  projectileLifetime: 3

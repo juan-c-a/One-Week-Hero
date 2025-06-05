@@ -12,10 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55442cab490871f48944beb90693c8f1, type: 3}
   m_Name: Pick
   m_EditorClassIdentifier: 
-  weaponName: 
+  isEnabled: 0
+  weaponName: Pick
+  weaponIcon: {fileID: 3332637266976826507, guid: 5c7950ca5601b5c4ea9e07200baea716, type: 3}
+  weaponPrefab: {fileID: 3635466641889579602, guid: 9da1d2cb4bcc9c1438064a5e2a80679b, type: 3}
   weaponType: 0
-  weaponIcon: {fileID: 0}
-  weaponPrefab: {fileID: 0}
+  damage: 4
+  cooldown: 0.5
   projectilePrefab: {fileID: 0}
-  baseDamage: 0
-  attackSpeed: 0
+  projectileSpeed: 0
+  projectileLifetime: 0

@@ -7,7 +7,7 @@ public class PlayerControllerPro : MonoBehaviour
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private InputActionReference move;
     [SerializeField] private Animator animator;
-
+    private PlayerHealth playerHealth;
     private Rigidbody2D playerRigidbody;
     private Vector2 movementInput;
 
@@ -18,6 +18,7 @@ public class PlayerControllerPro : MonoBehaviour
     }
     private void Awake()
     {
+        playerHealth = GetComponent<PlayerHealth>();
         playerRigidbody = GetComponent<Rigidbody2D>();
     }
 
@@ -42,7 +43,10 @@ public class PlayerControllerPro : MonoBehaviour
 
     private void OnMovePerformed(InputAction.CallbackContext context)
     {
-        movementInput = context.ReadValue<Vector2>();
+        if (playerHealth.isDead != true)
+        {
+            movementInput = context.ReadValue<Vector2>();
+        }
     }
 
     private void OnMoveCanceled(InputAction.CallbackContext context)

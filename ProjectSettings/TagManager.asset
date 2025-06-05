@@ -4,12 +4,12 @@
 TagManager:
   serializedVersion: 3
   tags:
-  - Ememy
+  - Enemy
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - EnemyLayer
   - Water
   - UI
   - 

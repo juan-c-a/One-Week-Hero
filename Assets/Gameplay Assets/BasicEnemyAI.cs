@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class BasicEnemyAI : MonoBehaviour
 {
+    [SerializeField] private int damage = 1;
     [SerializeField] private float moveSpeed = 2f;
     [SerializeField] private float detectionRange = 10f;
     [SerializeField] private float stoppingDistance = 1.5f;
@@ -52,7 +53,16 @@ public class BasicEnemyAI : MonoBehaviour
         {
             lastAttackTime = Time.time;
             Debug.Log($"{gameObject.name} attacks the player!");
-            // Aquí podrías aplicar daño al jugador o llamar a otro método.
+
+            if (target != null)
+            {
+                PlayerHealth playerHealth = target.GetComponent<PlayerHealth>();
+                if (playerHealth != null)
+                {
+                    playerHealth.TakeDamage(damage); // Podés ajustar el daño aquí
+                }
+            }
         }
     }
+
 }

@@ -15,9 +15,9 @@ GameObject:
   - component: {fileID: 4575916727340172269}
   - component: {fileID: 8020181090214876533}
   - component: {fileID: 973128021329158823}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Enemy
-  m_TagString: Ememy
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -177,9 +177,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd512e88c0e50624488f3d3ed2df9902, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  damage: 5
   moveSpeed: 2
-  detectionRange: 10
-  stoppingDistance: 1.5
+  detectionRange: 100
+  stoppingDistance: 1
   attackCooldown: 2
   animator: {fileID: 973128021329158823}
 --- !u!114 &8020181090214876533
@@ -194,7 +195,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b267c0352d20cad4b9d3b56d12185b12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 10
+  maxHealth: 20
 --- !u!95 &973128021329158823
 Animator:
   serializedVersion: 7
